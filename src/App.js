@@ -21,7 +21,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-// import { Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 // import CanvasJSReact from "./canvasjs.react";
 // var CanvasJS = CanvasJSReact.CanvasJS;
 // var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -38,7 +38,7 @@ ChartJS.register(
 
 export default function App() {
   // UseStates
-  const [indexes, setIndexes] = useState(null);
+  const [indexes, setIndexes] = useState(0);
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [file, setFile] = useState("");
@@ -75,8 +75,7 @@ export default function App() {
     reader.readAsText(file);
   };
 
-  var options = {};
-  var ans = [];
+  const ans = [];
 
   const deduceData = () => {
     for (var i = 0; i < 1000; i++) {
@@ -85,59 +84,41 @@ export default function App() {
         y: JSON.parse(data[indexes[currentQuestion]]?.y)[i + 1],
       });
     }
+  };
 
-    // options = {
-    //   responsive: true,
-    //   plugins: {
-    //     legend: {
-    //       position: "top",
-    //     },
-    //     title: {
-    //       display: true,
-    //       text: "Chart.js Line Chart",
-    //     },
-    //   },
-    // };
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Chart.js Line Chart",
+      },
+    },
+  };
 
-    // labels = JSON.parse(data[indexes[currentQuestion]]?.y);
-    // dataChart = {
-    //   labels,
-    //   datasets: [
-    //     {
-    //       label: "Dataset 1",
-    //       data: labels.map((index) =>
-    //         JSON.parse(data[indexes[currentQuestion]]?.x[index])
-    //       ),
-    //       borderColor: "rgb(255, 99, 132)",
-    //       backgroundColor: "rgba(255, 99, 132, 0.5)",
-    //     },
-    //   ],
-    // };
+  console.log(data);
 
-    // options = {
-    //   animationEnabled: true,
-    //   exportEnabled: true,
-    //   theme: "light2", // "light1", "dark1", "dark2"
-    //   title: {
-    //     text: "Bounce Rate by Week of Year",
-    //   },
-    //   axisY: {
-    //     title: "Bounce Rate",
-    //     suffix: "%",
-    //   },
-    //   axisX: {
-    //     title: "Week of Year",
-    //     prefix: "W",
-    //     interval: 2,
-    //   },
-    //   data: [
-    //     {
-    //       type: "line",
-    //       toolTipContent: "Week {x}: {y}%",
-    //       dataPoints: ans,
-    //     },
-    //   ],
-    // };
+  const labels = data.length
+    ? JSON.parse(data[indexes[currentQuestion]]?.x)
+    : [];
+
+  console.log(data.length > 0 && JSON.parse(data[indexes[currentQuestion]]?.y));
+
+  const dataSet = {
+    labels,
+    datasets: [
+      {
+        label: "Dataset 1",
+        data: labels.map(() =>
+          data.length > 0 ? JSON.parse(data[indexes[currentQuestion]]?.y) : 500
+        ),
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
   };
 
   const handleAnswerOptionClick = (isCorrect) => {
@@ -196,23 +177,7 @@ export default function App() {
               Do this graph belong to the selected chip?
             </div>
           </div>
-          {/* <h1 className="text-heading">Line Chart Using Rechart</h1>
-          <ResponsiveContainer width="100%" aspect={3}>
-            <LineChart data={ans} margin={{ right: 300 }}>
-              <CartesianGrid />
-              <XAxis dataKey="name" interval={"preserveStartEnd"} />
-              <YAxis></YAxis>
-              <Legend />
-              <Tooltip />
-              <Line dataKey="student" stroke="black" activeDot={{ r: 8 }} />
-              <Line dataKey="fees" stroke="red" activeDot={{ r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer> */}
-          {/* <Line options={options} data={dataChart} /> */}
-          <CanvasJSChart
-            options={options}
-            /* onRef={ref => this.chart = ref} */
-          />
+          <Line options={options} data={dataSet} />;
           <div className="answer-section">
             {["Yes", "No"].map((answerOption, index) => (
               <button
