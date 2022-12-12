@@ -37,7 +37,7 @@ export default function App() {
 
   // Values declared
   const allowedExtensions = ["csv"];
-  
+
   var initialGraphData = Array.apply(null, Array(20));
 
   const [graphLabelledData, setGraphLabelledData] = useState(initialGraphData);
@@ -91,13 +91,15 @@ export default function App() {
     },
   };
 
-  const labels = data.length > 0
-    ? JSON.parse(data[indexes[currentQuestion]]?.x)
-    : [];
+  const labels =
+    data.length > 0 && currentQuestion <= 19
+      ? JSON.parse(data[indexes[currentQuestion]]?.x)
+      : [];
 
-  const YData = data.length > 0
-    ? JSON.parse(data[indexes[currentQuestion]]?.y)
-    : [];
+  const YData =
+    data.length > 0 && currentQuestion <= 19
+      ? JSON.parse(data[indexes[currentQuestion]]?.y)
+      : [];
 
   const dataSet = {
     labels,
@@ -131,70 +133,69 @@ export default function App() {
     data.length > 0 && deduceData();
   }, [data]);
 
-const handleClick = (answerOption) => {
+  const handleClick = (answerOption) => {
+    var receivedArray = graphLabelledData;
+    receivedArray[currentQuestion] = answerOption;
+    setGraphLabelledData(receivedArray);
 
-	var receivedArray = graphLabelledData;
-	receivedArray[currentQuestion] = answerOption;
-	setGraphLabelledData(receivedArray);
-	console.log(`Set the value of: ${currentQuestion}`)
-
-	if(currentQuestion < 19) {
-		setCurrentQuestion(currentQuestion + 1);
-	}
-}
+    if (currentQuestion <= 19) {
+      setCurrentQuestion(currentQuestion + 1);
+    }
+  };
 
   // Driver Code
   return (
-  	<div className="grid-container">
-	    <div className="app-section">
-	      <div className="input-section">
-	        <label htmlFor="csvInput" style={{ display: "block" }}>
-	          Enter CSV File
-	        </label>
-	        <input
-	          onChange={handleFileChange}
-	          id="csvInput"
-	          name="file"
-	          type="File"
-	        />
-	      </div>
-	      {file ? (
-	        <>
-	          <div className="question-section">
-	            <div className="question-count">
-	              <span>Question {currentQuestion + 1}</span>/20
-	            </div>
-	            <div className="question-text">
-	              Do this graph belong to the selected chip?
-	            </div>
-	          </div>
-	          <Line options={options} data={dataSet} />
-	          {currentQuestion <= 19 ? (
-	            <div className="answer-section">
-	              {["Yes", "No"].map((answerOption, index) => (
-	                <button
-	                  onClick={() => handleClick(answerOption)}
-	                  key={index}
-	                >
-	                  {answerOption}
-	                </button>
-	              ))}
-	            </div>
-	          ) : (
-	            <div className="score-section">You scored {score} out of 20</div>
-	          )}
-	        </>
-	      ) : null}
+    <div className="grid-container">
+      <div className="app-section">
+        <div className="input-section">
+          <label htmlFor="csvInput" style={{ display: "block" }}>
+            Enter CSV File
+          </label>
+          <input
+            onChange={handleFileChange}
+            id="csvInput"
+            name="file"
+            type="File"
+          />
+        </div>
+        {file ? (
+          currentQuestion <= 19 ? (
+            <>
+              <div className="question-section">
+                <div className="question-count">
+                  <span>Question {currentQuestion + 1}</span>/20
+                </div>
+                <div className="question-text">
+                  Do this graph belong to the selected chip?
+                </div>
+              </div>
+              <Line options={options} data={dataSet} />
 
-	    </div>
+              <div className="answer-section">
+                {["Yes", "No"].map((answerOption, index) => (
+                  <button onClick={() => handleClick(answerOption)} key={index}>
+                    {answerOption}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="score-section">
+              Thanks for submitting the responses.
+            </div>
+          )
+        ) : null}
+      </div>
 
-		<div className="graph-label">
-			<p className="graph-label-heading">Graph Labelling</p>
+      <div className="graph-label">
+        <p className="graph-label-heading">Graph Labelling</p>
 
-			{ graphLabelledData.map((user, index) => (
-				<p className="graph-info" key={index}>{index+1} : {user}</p>
-			))}
-		</div>
+        {graphLabelledData.map((user, index) => (
+          <p className="graph-info" key={index}>
+            {index + 1} : {user}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
