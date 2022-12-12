@@ -36,3 +36,39 @@
     transform: rotate(360deg);
   }
 }
+
+.graph-label {
+  padding-top: 20px;
+  grid-area: right;
+}
+
+.graph-label-heading {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+}
+
+.graph-info {
+  text-align: center;
+  font-weight: bold;
+}
+
+.flex-container: {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  gap: 10px;
+  background-color: black;
+  padding: 10px;
+}
+
+.app-section {
+  grid-area: main;
+}
